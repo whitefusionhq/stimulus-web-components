@@ -2,7 +2,7 @@
 
 This library lets you write Stimulus controllers that can also act as Web Components! So instead of writing:
 
-```javascript
+```html
 <div data-controller="my-widget" data-my-widget-hue="blue">
   <button data-action="my-widget#engage">Engage!</button>
   …
@@ -11,7 +11,7 @@ This library lets you write Stimulus controllers that can also act as Web Compon
 
 You can write:
 
-```javascript
+```html
 <stimulus-my-widget hue="blue">
   <button data-action="my-widget#engage">Engage!</button>
   …
