@@ -1,6 +1,6 @@
 {
   "name": "stimulus-web-components",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Stimulus Web Components lets you write Stimulus controllers that also act as Web Components.",
   "main": "src/index.js",
   "scripts": {

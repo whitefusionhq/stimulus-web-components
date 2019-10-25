@@ -1,3 +1,5 @@
+import { Application } from "stimulus"
+
 export const setupStimulusComponents = application => {
   application.router.modules.forEach(module => {
     if (module.controllerConstructor.webComponent) {
@@ -66,7 +68,7 @@ export class StimulusWebComponentWrapper extends HTMLElement {
   connectStimulusController(controller) {
     this.stimulusController = controller 
     if (this.constructor.shadowRootHTML) {
-      this.stimulusController.shadowApp = window.Application.start(this.shadowRoot.children[0])
+      this.stimulusController.shadowApp = Application.start(this.shadowRoot.children[0])
     }
     this.constructor.observedAttributes.forEach(attributeName => {
       Object.defineProperty(this.stimulusController, attributeName, {
