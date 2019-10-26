@@ -3,9 +3,18 @@ import { Application } from "stimulus"
 export const setupStimulusComponents = application => {
   application.router.modules.forEach(module => {
     if (module.controllerConstructor.webComponent) {
-      window.customElements.define(`stimulus-${module.identifier}`, module.controllerConstructor.webComponent)
+      window.customElements.define(`${module.controllerConstructor.webComponent.tagPrefix}-${module.identifier}`, module.controllerConstructor.webComponent)
       module.controllerConstructor.prototype.webComponentize = function() {
         this.element.connectStimulusController(this)
+      }
+      module.controllerConstructor.prototype.shadowRegister = function(identifier, module) {
+        module.prototype.parentController = function() {
+          return this.element.parentNode.host.stimulusController
+        }
+        this.shadowApp.register(identifier, module)
+      }
+      module.controllerConstructor.prototype.slotElement = function(slotName) {
+        return this.element.querySelector(`*[slot="${slotName}"]`)
       }
     }
   })
@@ -22,7 +31,10 @@ export const stimulusWebComponent = props => {
     props.methods = []
   }
   if (!props.shadowRootHTML) {
-    props.shadowRootHTML = ""
+    props.shadowRootHTML = ''
+  }
+  if (!props.tagPrefix) {
+    props.tagPrefix = 'stimulus'
   }
   return class extends StimulusWebComponentWrapper {
     static get observedAttributes() {
@@ -33,6 +45,9 @@ export const stimulusWebComponent = props => {
     }
     static get shadowRootHTML() {
       return props.shadowRootHTML
+    }
+    static get tagPrefix() {
+      return props.tagPrefix
     }
   }
 }
@@ -61,14 +76,20 @@ export class StimulusWebComponentWrapper extends HTMLElement {
   }
 
   stimulusControllerIdentifier() {
-    const contIdent = this.nodeName.toLowerCase().replace('stimulus-','')
+    const contIdent = this.nodeName.toLowerCase().replace(`${this.constructor.tagPrefix}-`,'')
     return contIdent 
   }
 
   connectStimulusController(controller) {
+    // runs when the controller calls webComponetize()
     this.stimulusController = controller 
     if (this.constructor.shadowRootHTML) {
-      this.stimulusController.shadowApp = Application.start(this.shadowRoot.children[0])
+      for (let childNode of this.shadowRoot.children) {
+        if (!['style','script'].includes(childNode.tagName.toLowerCase())) {
+          this.stimulusController.shadowApp = Application.start(childNode)
+          break
+        }
+      }
     }
     this.constructor.observedAttributes.forEach(attributeName => {
       Object.defineProperty(this.stimulusController, attributeName, {

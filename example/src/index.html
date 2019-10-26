@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+      html { font-family: sans-serif; }
+      hr { border: 0.5px solid #eee; margin: 30px 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Hello (Web Components) World</h1>
+    <example-card
+      id="card1"
+      name="Theresa C. Rodriguez"
+      age="23">
+      <span slot="bio">She graduated <em>cum laude</em> from the University of Everywhere.</span>
+    </example-card>
+    <button
+      onclick="document.querySelector('#card1').highlight()">Highlight Card</button>
+    <button
+      onclick="alert(document.querySelector('#card1').summary())">Summary</button>
+    <hr/>
+    <example-card
+      id="card2"
+      name="Amir Khan"
+      age="59">
+      <span slot="bio">Boxer and philanthropist.</span>
+    </example-card>
+    <button
+      onclick="document.querySelector('#card2').highlight()">Highlight Card</button>
+    <button
+      onclick="alert(document.querySelector('#card2').summary())">Summary</button>
+    <hr />
+  </body>
+</html>
